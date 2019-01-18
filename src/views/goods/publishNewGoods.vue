@@ -69,11 +69,8 @@
       classification(value){
         this.vals=getCascaderObj(this.selectedOptions, this.options);
         this.$store.commit('setSelectedName', this.vals);
-
       },
       clickCreate() {
-        let selected = this.selectedOptions;
-        this.$store.commit('setSelected', selected);
         if(this.selectedOptions.length !== 0){
           this.options.forEach(item=>{
             if(item.value == this.selectedOptions[0]){

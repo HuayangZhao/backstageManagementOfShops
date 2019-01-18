@@ -29,8 +29,6 @@
             default-active="2"
             router
             class="el-menu-vertical-demo"
-            @open="handleOpen"
-            @close="handleClose"
           >
             <el-submenu index="1">
               <template slot="title">
@@ -116,12 +114,6 @@ export default {
       };
     },
   methods: {
-    handleOpen(key, keyPath) {
-    console.log(key, keyPath);
-    },
-    handleClose(key, keyPath) {
-    console.log(key, keyPath);
-    },
     handleSelect(key, keyPath) {
       console.log(key, keyPath);
     }

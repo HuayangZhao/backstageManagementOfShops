@@ -5,13 +5,14 @@
 </template>
 
 <script>
+
 export default {
   name: 'App'
 }
 </script>
 
 <style>
-#app {
+  #app {
   height: 100%;
 }
 </style>

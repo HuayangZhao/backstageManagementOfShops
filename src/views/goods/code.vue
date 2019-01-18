@@ -4,7 +4,9 @@
     action="https://jsonplaceholder.typicode.com/posts/"
     :show-file-list="false"
     :on-success="handleAvatarSuccess"
-    :before-upload="beforeAvatarUpload">
+    :before-upload="beforeAvatarUpload"
+    :on-remove="handleRemove">
+    <!--:on-change="handleChange"-->
     <img v-if="imageUrl" :src="imageUrl" class="avatar">
     <i v-else class="el-icon-plus avatar-uploader-icon"></i>
   </el-upload>
@@ -37,6 +39,7 @@
 
 <script>
   export default {
+    props:["tagName"],
     data() {
       return {
         imageUrl: ''
@@ -44,7 +47,14 @@
     },
     methods: {
       handleAvatarSuccess(res, file) {
+        file.tag = this.tagName
         this.imageUrl = URL.createObjectURL(file.raw);
+      },
+      handleChange(file, fileList){
+        console.log(file);
+      },
+      handleRemove(file, fileList){
+        console.log(file);
       },
       beforeAvatarUpload(file) {
         const isJPG = file.type === 'image/jpeg';

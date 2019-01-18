@@ -16,18 +16,21 @@
             <span>1</span>商品基本信息
           </h3>
           <el-form-item label="商品分类" prop="classification">
-            <span v-text="$store.state.selected.join(' > ')"></span>
+            <span v-text="$store.state.selectedName.join(' > ')" style="font-size: 14px;font-weight: 600"></span>
             <router-link to="/publishNewGoods" class="link">修改分类</router-link>
           </el-form-item>
-          <el-form-item label="商品标题" prop="title">
-            <el-input v-model="ruleForm.title" max="60" placeholder="商品标题组成：商品描述+规格（60字以内）"></el-input>
+          <el-form-item label="商品名称" prop="name">
+            <el-input v-model="ruleForm.name"  placeholder="商品名称，15字以内"></el-input>
           </el-form-item>
-          <el-form-item label="商品属性" prop="brand">
+          <el-form-item label="商品标题" prop="title">
+            <el-input v-model="ruleForm.title"  placeholder="商品标题组成：商品描述+规格（60字以内）"></el-input>
+          </el-form-item>
+          <el-form-item label="商品属性" >
             <i class="el-icon-warning"></i>
             <span>请准确填写属性，有利于商品在搜索和推荐中露出，错误填写可能面临商品下架或流量损失！</span>
             <div class="brand">
-              <el-form-item label="品牌">
-                <el-select v-model="value4" clearable placeholder="请选择品牌">
+              <el-form-item label="品牌" prop="brandId">
+                <el-select v-model="ruleForm.brandId" clearable placeholder="请选择品牌" @change="selectBrand">
                   <el-option
                     v-for="item in options"
                     :key="item.id"
@@ -38,7 +41,7 @@
               </el-form-item>
             </div>
           </el-form-item>
-          <el-form-item label="商品轮播图" prop="picture">
+          <el-form-item label="商品轮播图" prop="file">
             <el-upload
               :limit="limitnum"
               multiple
@@ -54,44 +57,7 @@
               <img width="100%" :src="dialogImageUrl" alt>
             </el-dialog>
           </el-form-item>
-          <div v-if="isMore">
-            <el-form-item label="商品描述">
-              <el-input type="textarea" v-model="ruleForm.desc"></el-input>
-            </el-form-item>
-            <el-form-item label="商品详情图" >
-              <el-upload
-                :limit="limitnum"
-                action="https://jsonplaceholder.typicode.com/posts/"
-                list-type="picture-card"
-                :on-preview="handlePictureCardPreview"
-                :on-remove="handleRemove">
-                <i class="el-icon-plus"></i>
-              </el-upload>
-              <el-dialog :visible.sync="dialogVisible">
-                <img width="100%" :src="dialogImageUrl" alt>
-              </el-dialog>
-            </el-form-item>
-            <el-form-item label="商品活动主图">
-              <el-upload
-                :limit="1"
-                action="https://jsonplaceholder.typicode.com/posts/"
-                list-type="picture-card"
-                :on-preview="handlePictureCardPreview"
-                :on-remove="handleRemove">
-                <i class="el-icon-plus"></i>
-              </el-upload>
-              <el-dialog :visible.sync="dialogVisible">
-                <img width="70%" :src="dialogImageUrl" alt>
-              </el-dialog>
-            </el-form-item>
-            <el-form-item label="商品短标题">
-              <el-input v-model="ruleForm.name" max="20"></el-input>
-            </el-form-item>
-          </div>
-          <el-form-item>
-            <span @click="lookMore" v-text="isMore?'收起':'填写更多图文详情'" class="clickhand"></span>
-            <i v-show="!isMore" class="el-icon-arrow-down"></i>
-            <i class="el-icon-arrow-up" v-show="isMore"></i>
+          <el-form-item label="商品详情" >
           </el-form-item>
         </div>
         <div>
@@ -111,8 +77,8 @@
                   ></el-option>
                 </el-select>
                 <el-checkbox v-model="addPicture" v-if="dynamicTags.length  > 0">添加照片</el-checkbox>
-                <span>删除规格</span>
-                <div class="itps" v-show="isTips">
+                <span @click="delAll">删除规格</span>
+                <div class="itps" v-if="isTips">
                   <el-tag
                     :key="tag"
                     v-for="tag in dynamicTags"
@@ -120,7 +86,7 @@
                     :disable-transitions="false"
                     @close="handleClose(tag)"
                   >{{tag}}
-                    <Img style="margin-top: 10px;" v-if="addPicture"></Img>
+                    <Img style="margin-top: 10px;" v-if="addPicture"  :tagName="tag"></Img>
                   </el-tag>
                   <el-input
                     class="input-new-tag"
@@ -143,7 +109,7 @@
                   >+ 输入规格名称</el-button>
                 </div>
               </div>
-              <div class="spsBox" v-show="isSpecifications == 2">
+              <div class="spsBox" v-if="isSpecifications == 2">
                 <el-select v-model="value4" placeholder="请选择" size="small">
                   <el-option
                     v-for="item in options"
@@ -152,7 +118,7 @@
                     :value="item.value"
                   ></el-option>
                 </el-select>
-                <span>删除规格</span>
+                <span @click="delLast">删除规格</span>
                 <div class="itps" v-show="isTips">
                   <el-tag
                     :key="tag"
@@ -204,9 +170,8 @@
                   </el-select>
                   <el-input placeholder="库存" size="mini" type="number" style="padding:0"></el-input>
                   <el-input placeholder="团购价" size="mini" type="number">
-                    <!-- <template slot="prepend">￥</template> -->
                   </el-input>
-                  <el-input placeholder="单买价" size="mini" type="number">
+                  <el-input placeholder="单价" size="mini" type="number">
                     <!-- <template slot="prepend">￥</template> -->
                   </el-input>
                   <el-input placeholder="sku编码" size="mini"></el-input>
@@ -224,16 +189,6 @@
                 </el-table>
               </div>
             </div>
-          </el-form-item>
-          <el-form-item label="商品市场价">
-            <el-input
-              v-model="ruleForm.name"
-              placeholder="应高于商品最大单买价"
-              style="width:250px"
-              size="small"
-            >
-              <template slot="append">元</template>
-            </el-input>
           </el-form-item>
         </div>
         <div>
@@ -342,75 +297,42 @@
       </el-form>
     </div>
     <el-row class="butBox">
-      <el-button type="danger">提交上架</el-button>
+      <el-button type="danger" @click="submitToTheShelves">提交上架</el-button>
       <el-button plain>保存草稿</el-button>
     </el-row>
   </div>
 </template>
 <script>
   import Img from './code'
-  import {getGoodsBrandByCategory} from "@/api/axios"
+  import {getGoodsBrandByCategory,postCommodity,removeImg} from "@/api/axios"
 export default {
   data() {
     return {
-      myCroppa:{},
+      // 富文本
+      config: {
+        autoHeightEnabled: false,
+        autoFloatEnabled: true,
+        initialContent:'请输入内容',
+        initialFrameWidth: null,
+        initialFrameHeight: 450,
+        BaseUrl: '',
+        UEDITOR_HOME_URL: 'static/ueditor/'
+      },
+      addFormVisible: false,
       // 轮播图图片
-      bannerimg:{},
-      // 商品分类
+      bannerimg:[],
+      // 商品分类 id
       selectedOptions:[],
-      // 第一条盒子是否显示更多\
+      doogId:'',
       msg: "填写更多图文详情",
-      limitnum: 6,
+      limitnum: 5,
       isMore: false,
       // 第2条盒子添加规格
       isSpecifications: 0,
       isTips: false,
       addPicture:false,
       // 价格库存
-      tableData6: [
-        {
-          id: "12987122",
-          name: "款式",
-          amount1: "234",
-          amount2: "3.2",
-          amount3: 10
-        },
-        {
-          id: "12987123",
-          name: "库存",
-          amount1: "165",
-          amount2: "4.43",
-          amount3: 12
-        },
-        {
-          id: "12987124",
-          name: "团购价",
-          amount1: "324",
-          amount2: "1.9",
-          amount3: 9
-        },
-        {
-          id: "12987125",
-          name: "单买价",
-          amount1: "621",
-          amount2: "2.2",
-          amount3: 17
-        },
-        {
-          id: "12987126",
-          name: "sku编码",
-          amount1: "539",
-          amount2: "4.1",
-          amount3: 15
-        },
-        {
-          id: "12987126",
-          name: "预览图",
-          amount1: "539",
-          amount2: "4.1",
-          amount3: 15
-        }
-      ],
+      tableData6: [],
       // 商品信息
       dynamicTags: [],
       inputVisible: false,
@@ -421,10 +343,9 @@ export default {
       checked: true,
       isupdate:false,
       ruleForm: {
-        name: "",
-        region: "",
-        date1: "",
-        date2: "",
+        title: "",
+        brandId: "",
+        name:"",
         delivery: false,
         type: [],
         resource: "",
@@ -432,46 +353,26 @@ export default {
       },
       rules: {
         classification:[
-          { required: true, message: "请选择活动区域", trigger: "change" },
+          { required: true, message: "请选择商品分类", trigger: "change" },
+        ],
+        name: [
+          { required: true, message: "请输入商品名称", trigger: "blur" },
+          { min: 5, max: 20, message: "长度在5-20字以内", trigger: "blur" }
         ],
         title: [
           { required: true, message: "请输入商品标题", trigger: "blur" },
           { min: 5, max: 60, message: "长度在5-60字以内", trigger: "blur" }
         ],
-        picture: [
-          { required: true, message: "请选择活动区域", trigger: "change" }
+        brandId: [
+          { required: true, message: "请选择商品品牌", trigger: "change" }
         ],
-        date1: [
-          {
-            type: "date",
-            required: true,
-            message: "请选择日期",
-            trigger: "change"
-          }
-        ],
-        date2: [
-          {
-            type: "date",
-            required: true,
-            message: "请选择时间",
-            trigger: "change"
-          }
-        ],
-        type: [
-          {
-            type: "array",
-            required: true,
-            message: "请至少选择一个活动性质",
-            trigger: "change"
-          }
-        ],
-        brand: [
-          { required: true, message: "请选择活动资源", trigger: "change" }
+        file: [
+          { required: true, message: '请上传图片' }
         ],
         desc: [{ required: true, message: "请填写活动形式", trigger: "blur" }]
       },
       // 选择品牌
-      options: [],
+      options: [{label:1,value:2}],
       value4: "",
       // 文件上传
       dialogImageUrl: "",
@@ -483,15 +384,14 @@ export default {
     this.getbaand()
   },
   components:{
-    Img
+    Img,
+    UEditor
   },
   methods: {
     // 通过分类获取品牌
     getbaand(){
       var idCategory = this.$store.state.selected[this.$store.state.selected.length -1 ]
-      console.log(idCategory);
       getGoodsBrandByCategory(idCategory).then(res=>{
-        console.log(res);
         if(res.data.code == 0){
             this.options = res.data.data
         }
@@ -500,38 +400,26 @@ export default {
         }
       })
     },
-    // 添加规格
+    // 选择品牌
+    selectBrand(value){
+      this.ruleForm.brandId = value
+      console.log(this.ruleForm.brandId);
+    },
+    // 选择规格显示小标签
+    showNext(val) {
+      this.isTips = true;
+    },
+    // 添加规格 显示第二个
     showSpecifications() {
       this.isSpecifications++;
     },
     // 添加小标签
-    submitForm(formName) {
-      this.$refs[formName].validate(valid => {
-        if (valid) {
-          alert("submit!");
-        } else {
-          console.log("error submit!!");
-          return false;
-        }
-      });
-    },
-    // 关闭小标签
-    handleClose(tag) {
-      this.dynamicTags.splice(this.dynamicTags.indexOf(tag), 1);
-      if (this.dynamicTags.length < 5) {
-        this.isTag = true;
-      }
-    },
     showInput() {
       this.inputVisible = true;
       this.$nextTick(_ => {
         this.$refs.saveTagInput.$refs.input.focus();
       });
     },
-    updateMore(){
-      this.isupdate = !this.isupdate
-    },
-    // 添加小标签
     handleInputConfirm() {
       let inputValue = this.inputValue;
       if (inputValue) {
@@ -542,40 +430,100 @@ export default {
       }
       this.inputVisible = false;
       this.inputValue = "";
+      // 所有的小标签合集
+      console.log(this.dynamicTags);
     },
-    // 选择规格显示小标签
-    showNext(val) {
-      this.isTips = true;
+    // 关闭小标签
+    handleClose(tag) {
+      this.dynamicTags.splice(this.dynamicTags.indexOf(tag), 1);
+      if (this.dynamicTags.length < 5) {
+        this.isTag = true;
+      }
+      console.log(this.dynamicTags);
     },
-
+    // 删除规格
+    delAll(){
+      this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.isSpecifications = 0
+        this.$message({
+          type: 'success',
+          message: '删除成功!'
+        });
+      }).catch(() => {
+        // this.$message({
+        //   type: 'info',
+        //   message: '已取消删除'
+        // });
+      });
+    },
+    delLast(){
+      this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.isSpecifications = 1
+        this.$message({
+          type: 'success',
+          message: '删除成功!'
+        });
+      }).catch(() => {
+            // this.$message({
+            //   type: 'info',
+            //   message: '已取消删除'
+            // });
+      });
+    },
     resetForm(formName) {
       this.$refs[formName].resetFields();
     },
     // 文件上传
     handleRemove(file, fileList) {
+      removeImg(file.id).then(res=>{
+        console.log(res);
+      })
       console.log(file);
       console.log(fileList);
     },
     handlePictureCardPreview(file) {
-      // console.log(file);
       this.dialogImageUrl = file.url;
       this.dialogVisible = true;
     },
     handlesuccess(response, file, fileList){
-      console.log(response);
-      console.log(file);
       file.id = response.data.id
-      this.bannerimg[response.data.id] = response.data.url
+        let shopId = this.$store.state.shopId;
+        let imgUrl = response.data.url
+        let qiniuId = response.data.id
+      this.bannerimg.push({shopId,imgUrl,qiniuId})
       console.log(this.bannerimg);
     },
-    // 上传更多图片
-    lookMore() {
-      this.isMore = !this.isMore;
+    // 展开收起
+    updateMore(){
+      this.isupdate = !this.isupdate
+    },
+    // 提交上架
+    submitToTheShelves(){
+      let obj = {};
+      obj.categoryId = this.$store.state.selected[this.$store.state.selected.length-1];
+      obj.title = this.ruleForm.title;
+      obj.name = this.ruleForm.name;
+      obj.brandId = this.ruleForm.brandId;
+      // 提交商品标题名称分类品牌
+      postCommodity(obj).then(res=>{
+        console.log(res);
+      })
     }
   }
 };
 </script>
 <style lang="less" scoped>
+  .edui-default .edui-toolbar .edui-combox .edui-combox-body {
+    height: 20px;
+  }
   .avatar-uploader-icon[data-v-5511ac25] {
     margin-top: 10px;
     border: 1px dashed #d9d9d9;
@@ -604,6 +552,7 @@ export default {
     display: block;
   }
 .createNewGoods {
+  padding-right: 15%;
   .butBox {
     margin-left: 30%;
     margin-top: 20px;
@@ -686,8 +635,8 @@ export default {
     margin-bottom: 20px;
   }
   .borderBox {
-    border: 1px solid #ccc;
-    width: 80%;
+    border: 1px solid #e9efed;
+    padding-right: 30px;
     .demo-ruleForm {
       > div {
         padding: 30px 20px;
