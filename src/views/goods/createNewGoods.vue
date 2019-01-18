@@ -42,6 +42,32 @@
             </div>
           </el-form-item>
           <el-form-item label="商品轮播图" prop="file">
+            <!--<el-button type="primary" @click="croppaVisible=true" size="mini">点击上传</el-button>-->
+            <!--<div id="bannerImgs" v-lfcous>-->
+
+            <!--</div>-->
+            <!--<el-dialog title="图片裁剪"-->
+                       <!--:visible.sync="croppaVisible"-->
+                       <!--width="500px"-->
+                       <!--:before-close="handleClose"-->
+                       <!--style="text-align: center;"-->
+                       <!--:show-close="isClose">-->
+                <!--<croppa-->
+                        <!--v-model="myCroppa"-->
+                        <!--:width="375"-->
+                        <!--:height="400"-->
+                        <!--:prevent-white-space="true"-->
+                        <!--initial-size="natural"-->
+                        <!--initial-position="center"-->
+                        <!--:remove-button-size="20"-->
+                        <!--remove-button-color="#ccc"-->
+                        <!--&gt;-->
+                <!--</croppa>-->
+              <!--<span slot="footer" class="dialog-footer">-->
+                    <!--<el-button @click="croppaVisible = false">取 消</el-button>-->
+                    <!--<el-button type="primary" @click="uploadCroppedImage">确 定</el-button>-->
+              <!--</span>-->
+            <!--</el-dialog>-->
             <el-upload
               :limit="limitnum"
               multiple
@@ -58,6 +84,7 @@
             </el-dialog>
           </el-form-item>
           <el-form-item label="商品详情" >
+            <VueUmeditor @ready="editorReady"></VueUmeditor>
           </el-form-item>
         </div>
         <div>
@@ -302,12 +329,37 @@
     </el-row>
   </div>
 </template>
+
 <script>
   import Img from './code'
-  import {getGoodsBrandByCategory,postCommodity,removeImg} from "@/api/axios"
+  import Cropper from './cropper'
+  import VueUmeditor from 'vue-ueditor'
+  import {getGoodsBrandByCategory,postCommodity,removeImg,postImg} from "@/api/axios"
 export default {
+  directives:{
+    lfcous:function(el, pra, a) {
+      let imgs = el.querySelectorAll('img');
+      imgs.forEach(item=>{
+        item.onclick = function(e) {
+          //创建focus的事件
+          console.log(e.target)
+          console.log(a)
+          console.log(el)
+          console.log(pra);
+        }
+        item.onblur  = function(e) {
+          //创建focus的事件
+          console.log(666)
+        }
+      })
+    }
+  },
+
   data() {
     return {
+      isClose:false,
+      visible2: false,
+      croppaVisible: false,
       // 富文本
       config: {
         autoHeightEnabled: false,
@@ -318,8 +370,8 @@ export default {
         BaseUrl: '',
         UEDITOR_HOME_URL: 'static/ueditor/'
       },
-      addFormVisible: false,
       // 轮播图图片
+      myCroppa: {},
       bannerimg:[],
       // 商品分类 id
       selectedOptions:[],
@@ -385,10 +437,52 @@ export default {
   },
   components:{
     Img,
-    UEditor
+    Cropper,
+    VueUmeditor
   },
   methods: {
-    // 通过分类获取品牌
+    editorReady (editorInstance) {
+      // editorInstance.setContent('Hello world!<br>你可以在这里初始化编辑器的初始内容。');
+      editorInstance.addListener('contentChange', () => {
+        console.log('编辑器内容发生了变化：', editorInstance.getContent());
+      })
+    },
+    // uploadCroppedImage() {
+    //   this.myCroppa.generateBlob(
+    //     blob => {
+    //       // console.log(this.myCroppa.generateDataUrl());
+    //       let formdata = new FormData();
+    //       formdata.append('file', this.convertBase64UrlToBlob(this.myCroppa.generateDataUrl()));
+    //       console.log(formdata.get("file"))
+    //       // let urlFiles = "http://192.168.0.129:4006/files?fileSource=FASTDFS"
+    //       console.log(formdata.get("file"));
+    //       postImg(formdata).then(res => {
+    //         console.log(1);
+    //         console.log(res);
+    //         // let data = res.data;
+    //         // if (data.status) {
+    //         //   that.$message.success("保存成功");
+    //         //   that.dialogVisible = false;
+    //         // }
+    //         let newImg = document.createElement("img")
+    //         let url = URL.createObjectURL(blob);
+    //         console.log(blob);
+    //         // 释放URL
+    //         newImg.onload = function() {
+    //           URL.revokeObjectURL(url);
+    //         };
+    //         newImg.src = url;
+    //         let bannerImgs = document.getElementById('bannerImgs')
+    //         newImg.style.width = "125px"
+    //         newImg.style.border = "1px dashed #ccc"
+    //         newImg.style.marginRight = "20px"
+    //         bannerImgs.appendChild(newImg);
+    //       });
+    //     },
+    //     "image/jpeg",
+    //     0.8
+    //   ); // 80%压缩文件
+    // },
     getbaand(){
       var idCategory = this.$store.state.selected[this.$store.state.selected.length -1 ]
       getGoodsBrandByCategory(idCategory).then(res=>{
@@ -483,23 +577,25 @@ export default {
     },
     // 文件上传
     handleRemove(file, fileList) {
+      console.log(file.id)
       removeImg(file.id).then(res=>{
-        console.log(res);
+        // console.log(res);
       })
-      console.log(file);
-      console.log(fileList);
+      // console.log(file);
+      // console.log(fileList);
     },
     handlePictureCardPreview(file) {
       this.dialogImageUrl = file.url;
       this.dialogVisible = true;
     },
     handlesuccess(response, file, fileList){
+      console.log(response);
       file.id = response.data.id
         let shopId = this.$store.state.shopId;
         let imgUrl = response.data.url
         let qiniuId = response.data.id
       this.bannerimg.push({shopId,imgUrl,qiniuId})
-      console.log(this.bannerimg);
+
     },
     // 展开收起
     updateMore(){

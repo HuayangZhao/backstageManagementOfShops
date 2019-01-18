@@ -1,5 +1,6 @@
 import axios from 'axios'
 export const removeImg = (id)=>axios.delete( 'http://192.168.0.129:4006/files/'+ id)
+export const postImg = (data)=>axios.post( 'http://192.168.0.129:4006/files/',data)
 // 设置请求根路径
 axios.defaults.baseURL = 'http://192.168.0.29:8090';
 // 获取所有行业分类
