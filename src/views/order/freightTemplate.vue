@@ -3,7 +3,7 @@
       <div class="waring">
         <i class="el-icon-warning"></i>默认模板由系统根据现有商品的信息自动生成，可以修改，未被使用的模板可以删除
       </div>
-      <el-button type="danger" size="mini">新建运费模板</el-button>
+      <el-button type="danger" size="mini" @click="toCreateFreight">新建运费模板</el-button>
       <div style="margin-top: 10px">
         <el-table
           :data="tableData"
@@ -99,6 +99,9 @@
               message: '已取消删除'
             });
           });
+        },
+        toCreateFreight(){
+          this.$router.push({path:"/createFreight"})
         }
       }
     }

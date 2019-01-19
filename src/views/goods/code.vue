@@ -1,7 +1,7 @@
 <template>
   <el-upload
     class="avatar-uploader"
-    action="https://jsonplaceholder.typicode.com/posts/"
+    action="http://192.168.0.129:4006/files?fileSource=FASTDFS"
     :show-file-list="false"
     :on-success="handleAvatarSuccess"
     :before-upload="beforeAvatarUpload"
@@ -48,6 +48,10 @@
     methods: {
       handleAvatarSuccess(res, file) {
         file.tag = this.tagName
+        let obj = {}
+        obj.tag = file.tag
+        obj.url = res.data.url
+        this.$store.commit("pushSpecImg",obj)
         this.imageUrl = URL.createObjectURL(file.raw);
       },
       handleChange(file, fileList){

@@ -35,7 +35,7 @@
                 <i class="el-icon-goods"></i>
                 <span>商品管理</span>
               </template>
-                <el-menu-item index="/publishNewGoods">新商品发布</el-menu-item>
+                <el-menu-item index="/classification">新商品发布</el-menu-item>
                 <el-menu-item index="/goodsList">商品列表</el-menu-item>
                 <el-menu-item index="/evaluate">评价管理</el-menu-item>
             </el-submenu>

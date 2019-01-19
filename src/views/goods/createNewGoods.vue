@@ -84,7 +84,7 @@
             </el-dialog>
           </el-form-item>
           <el-form-item label="商品详情" >
-            <VueUmeditor @ready="editorReady"></VueUmeditor>
+            <!--<VueUmeditor @ready="editorReady"></VueUmeditor>-->
           </el-form-item>
         </div>
         <div>
@@ -95,12 +95,12 @@
             <div v-show="isSpecifications == 1||isSpecifications == 2">
               <span style="color: #ccc;font-size: 12px">最多添加两个商品规格，第一个商品规格可添加规格图片</span>
               <div class="spsBox">
-                <el-select v-model="value4" placeholder="请选择" size="small" @change="showNext">
+                <el-select v-model="specvalue1" placeholder="请选择" size="small" @change="showNext">
                   <el-option
-                    v-for="item in options"
-                    :key="item.value"
-                    :label="item.label"
-                    :value="item.value"
+                    v-for="item in specOptions"
+                    :key="item.id"
+                    :label="item.name"
+                    :value="item.id"
                   ></el-option>
                 </el-select>
                 <el-checkbox v-model="addPicture" v-if="dynamicTags.length  > 0">添加照片</el-checkbox>
@@ -137,31 +137,31 @@
                 </div>
               </div>
               <div class="spsBox" v-if="isSpecifications == 2">
-                <el-select v-model="value4" placeholder="请选择" size="small">
+                <el-select v-model="specvalue2" placeholder="请选择" size="small">
                   <el-option
-                    v-for="item in options"
-                    :key="item.value"
-                    :label="item.label"
-                    :value="item.value"
+                    v-for="item in specOptions"
+                    :key="item.id"
+                    :value="item.id"
+                    :label="item.name"
                   ></el-option>
                 </el-select>
                 <span @click="delLast">删除规格</span>
                 <div class="itps" v-show="isTips">
                   <el-tag
                     :key="tag"
-                    v-for="tag in dynamicTags"
+                    v-for="tag in dynamicTags1"
                     closable
                     :disable-transitions="false"
-                    @close="handleClose(tag)"
+                    @close="handleClose1(tag)"
                   >{{tag}}</el-tag>
                   <el-input
                     class="input-new-tag"
-                    v-if="inputVisible"
-                    v-model="inputValue"
-                    ref="saveTagInput"
+                    v-if="inputVisible1"
+                    v-model="inputValue1"
+                    ref="saveTagInput1"
                     size="small"
-                    @keyup.enter.native="handleInputConfirm"
-                    @blur="handleInputConfirm"
+                    @keyup.enter.native="handleInputConfirm2"
+                    @blur="handleInputConfirm2"
                   ></el-input>
                   <el-button
                     v-else
@@ -169,8 +169,8 @@
                     size="small"
                     type="primary"
                     plain
-                    @click="showInput"
-                    v-show="isTag"
+                    @click="showInput1"
+                    v-show="isTag1"
                   >+ 输入规格名称</el-button>
                 </div>
               </div>
@@ -187,12 +187,12 @@
               <div class="setAllBox">
                 <p>批量设置：在下方栏中选择内容进行批量填充</p>
                 <div class="setAll">
-                  <el-select v-model="value4" placeholder="请选择" size="mini">
+                  <el-select v-model="specvalue2" placeholder="请选择" size="mini">
                     <el-option
-                      v-for="item in options"
-                      :key="item.value"
-                      :label="item.label"
-                      :value="item.value"
+                      v-for="item in specOptions"
+                      :key="item.id"
+                      :label="item.name"
+                      :value="item.id"
                     ></el-option>
                   </el-select>
                   <el-input placeholder="库存" size="mini" type="number" style="padding:0"></el-input>
@@ -225,39 +225,39 @@
           <div class="thereBox">
             <el-form-item >
               <div class="tags">
-                <el-tag>标签一</el-tag>
-                <el-tag type="success">标签二</el-tag>
-                <el-tag type="info">标签三</el-tag>
-                <el-tag type="warning">标签四</el-tag>
-                <el-tag type="danger">标签五</el-tag>
+                <el-tag>{{radio}}</el-tag>
+                <el-tag type="success">{{checked?'新品':'二手'}}</el-tag>
+                <el-tag type="info">{{radio1==0?'非预售':'预售'}}</el-tag>
+                <el-tag type="warning">{{radio1==0?'承诺发货时间48小时':'承诺发货时间24小时'}}</el-tag>
+                <el-tag type="danger">{{freight}}</el-tag>
               </div>
             </el-form-item>
             <div v-if="isupdate">
               <el-form-item label="商品类型">
-                <el-radio-group v-model="radio2">
-                  <el-radio :label="3">普通商品</el-radio>
-                  <el-radio :label="6">进口商品</el-radio>
-                  <el-radio :label="9">直供商品</el-radio>
-                  <el-radio :label="11">直邮商品</el-radio>
+                <el-radio-group v-model="radio">
+                  <el-radio label="普通商品">普通商品</el-radio>
+                  <el-radio label="进口商品">进口商品</el-radio>
+                  <el-radio label="直供商品">直供商品</el-radio>
+                  <el-radio label="直邮商品">直邮商品</el-radio>
                 </el-radio-group>
               </el-form-item>
               <el-form-item label="是否二手">
                 <el-checkbox v-model="checked">非二手</el-checkbox>
               </el-form-item>
               <el-form-item label="是否预售">
-                <el-radio-group v-model="radio2">
-                  <el-radio :label="3">非预售</el-radio>
-                  <el-radio :label="6">预售</el-radio>
+                <el-radio-group v-model="radio1">
+                  <el-radio label="0">非预售</el-radio>
+                  <el-radio label="1">预售</el-radio>
                 </el-radio-group>
               </el-form-item>
               <el-form-item label="时间承诺">
                 <el-radio-group v-model="radio2">
-                  <el-radio :label="3">48小时</el-radio>
-                  <el-radio :label="6">24小时</el-radio>
+                  <el-radio label="0">48小时</el-radio>
+                  <el-radio label="1">24小时</el-radio>
                 </el-radio-group>
               </el-form-item>
               <el-form-item label="运费模板">
-                <el-select v-model="value4" placeholder="请选择">
+                <el-select v-model="value4" placeholder="请选择"  @change="freightSelect">
                   <el-option
                     v-for="item in options"
                     :key="item.value"
@@ -265,18 +265,18 @@
                     :value="item.value"
                   ></el-option>
                 </el-select>
-                <router-link to>新建运费模板</router-link>
+                <router-link to="/createFreight">新建运费模板</router-link>
                 <div class="adrs">
                   <div>
-                      <span class="stronger">包邮配送地区:</span>
+                      <div class="stronger">包邮配送地区:</div>
                       <span>北京、安徽、福建、广东、广西、贵州、河北、河南、黑龙江、湖北、湖南、吉林、江苏、江西、辽宁、山东、山西、陕西、上海、四川、天津、云南、浙江、重庆</span>
                   </div>
                   <div>
-                      <span class="stronger">不包邮配送地区 ：</span>
+                      <div class="stronger">不包邮配送地区 ：</div>
                       <span>未选择地区</span>
                   </div>
                   <div>
-                      <span class="stronger">不配送地区 ：</span>
+                      <div class="stronger">不配送地区 ：</div>
                       <span>甘肃、海南、内蒙古、宁夏、青海、西藏、新疆</span>
                   </div>
                 </div>
@@ -332,44 +332,15 @@
 
 <script>
   import Img from './code'
-  import Cropper from './cropper'
-  import VueUmeditor from 'vue-ueditor'
-  import {getGoodsBrandByCategory,postCommodity,removeImg,postImg} from "@/api/axios"
+  // import Cropper from './cropper'
+  // import VueUmeditor from 'vue-ueditor'
+  import {getGoodsBrandByCategory,postCommodity,removeImg,postImg,postGoodsImgs,getAllSpec,postSpecImgs} from "@/api/axios"
 export default {
-  directives:{
-    lfcous:function(el, pra, a) {
-      let imgs = el.querySelectorAll('img');
-      imgs.forEach(item=>{
-        item.onclick = function(e) {
-          //创建focus的事件
-          console.log(e.target)
-          console.log(a)
-          console.log(el)
-          console.log(pra);
-        }
-        item.onblur  = function(e) {
-          //创建focus的事件
-          console.log(666)
-        }
-      })
-    }
-  },
-
   data() {
     return {
       isClose:false,
       visible2: false,
       croppaVisible: false,
-      // 富文本
-      config: {
-        autoHeightEnabled: false,
-        autoFloatEnabled: true,
-        initialContent:'请输入内容',
-        initialFrameWidth: null,
-        initialFrameHeight: 450,
-        BaseUrl: '',
-        UEDITOR_HOME_URL: 'static/ueditor/'
-      },
       // 轮播图图片
       myCroppa: {},
       bannerimg:[],
@@ -387,13 +358,23 @@ export default {
       tableData6: [],
       // 商品信息
       dynamicTags: [],
+      dynamicTags1: [],
       inputVisible: false,
+      inputVisible1: false,
       inputValue: "",
+      inputValue1: "",
       isTag: true,
+      isTag1: true,
       // 第三个盒子选择类
-      radio2: 3,
+      radio:"普通商品",
+      radio1: "0",
+      radio2: "0",
+      freight:"河南",
       checked: true,
       isupdate:false,
+      specOptions:[],
+      specvalue1:null,
+      specvalue2:null,
       ruleForm: {
         title: "",
         brandId: "",
@@ -424,8 +405,11 @@ export default {
         desc: [{ required: true, message: "请填写活动形式", trigger: "blur" }]
       },
       // 选择品牌
-      options: [{label:1,value:2}],
-      value4: "",
+      options: [
+        {label:"河南",value:2},
+        {label:"河北",value:3},
+        {label:"武汉",value:4}],
+      value4: 2,
       // 文件上传
       dialogImageUrl: "",
       dialogVisible: false,
@@ -437,8 +421,8 @@ export default {
   },
   components:{
     Img,
-    Cropper,
-    VueUmeditor
+    // Cropper,
+    // VueUmeditor
   },
   methods: {
     editorReady (editorInstance) {
@@ -493,6 +477,13 @@ export default {
           this.$message.error('分类品牌加载失败，请重新选择分类');
         }
       })
+      // 获取商品规格
+      getAllSpec().then(res=>{
+        console.log(res);
+        if(res.data.code==0){
+          this.specOptions = res.data.data
+        }
+      })
     },
     // 选择品牌
     selectBrand(value){
@@ -507,11 +498,17 @@ export default {
     showSpecifications() {
       this.isSpecifications++;
     },
-    // 添加小标签
+    // 分辨两个规格的骚操作
     showInput() {
       this.inputVisible = true;
       this.$nextTick(_ => {
         this.$refs.saveTagInput.$refs.input.focus();
+      });
+    },
+    showInput1() {
+      this.inputVisible1 = true;
+      this.$nextTick(_ => {
+        this.$refs.saveTagInput1.$refs.input.focus();
       });
     },
     handleInputConfirm() {
@@ -521,19 +518,51 @@ export default {
         if (this.dynamicTags.length > 4) {
           this.isTag = false;
         }
+        let obj = {}
+        obj.specificationId = this.specvalue1
+        obj.name = inputValue
+        this.$store.commit("pushSpecTag",obj)
       }
       this.inputVisible = false;
       this.inputValue = "";
-      // 所有的小标签合集
-      console.log(this.dynamicTags);
     },
-    // 关闭小标签
+    handleInputConfirm2(){
+      let inputValue = this.inputValue1;
+      if (inputValue) {
+        this.dynamicTags1.push(inputValue);
+        if (this.dynamicTags1.length > 4) {
+          this.isTag1 = false;
+        }
+        let obj = {}
+        obj.falg = "删除用"
+        obj.specificationId = this.specvalue2
+        obj.name = inputValue
+        this.$store.commit("pushSpecTag",obj)
+      }
+      this.inputVisible1 = false;
+      this.inputValue1 = "";
+    },
     handleClose(tag) {
       this.dynamicTags.splice(this.dynamicTags.indexOf(tag), 1);
       if (this.dynamicTags.length < 5) {
         this.isTag = true;
       }
-      console.log(this.dynamicTags);
+      this.$store.state.specImg.forEach(item=>{
+        if(item.name === tag){
+          this.$store.commit("removeSpecTag",item)
+        }
+      })
+    },
+    handleClose1(tag) {
+      this.dynamicTags1.splice(this.dynamicTags1.indexOf(tag), 1);
+      if (this.dynamicTags1.length < 5) {
+        this.isTag1 = true;
+      }
+      this.$store.state.specImg.forEach(item=>{
+        if(item.name === tag){
+          this.$store.commit("removeSpecTag",item)
+        }
+      })
     },
     // 删除规格
     delAll(){
@@ -561,16 +590,10 @@ export default {
         type: 'warning'
       }).then(() => {
         this.isSpecifications = 1
-        this.$message({
-          type: 'success',
-          message: '删除成功!'
-        });
-      }).catch(() => {
-            // this.$message({
-            //   type: 'info',
-            //   message: '已取消删除'
-            // });
-      });
+        this.$store.commit("delSpec")
+        this.$message({type: 'success', message: '删除成功!'});
+        this.dynamicTags1 = []
+      }).catch(() => {});
     },
     resetForm(formName) {
       this.$refs[formName].resetFields();
@@ -595,11 +618,17 @@ export default {
         let imgUrl = response.data.url
         let qiniuId = response.data.id
       this.bannerimg.push({shopId,imgUrl,qiniuId})
-
     },
     // 展开收起
     updateMore(){
       this.isupdate = !this.isupdate
+    },
+    freightSelect(value){
+      let obj = {};
+      obj = this.options.find((item)=>{
+        return item.value === value;
+      });
+      this.freight = obj.label
     },
     // 提交上架
     submitToTheShelves(){
@@ -608,10 +637,26 @@ export default {
       obj.title = this.ruleForm.title;
       obj.name = this.ruleForm.name;
       obj.brandId = this.ruleForm.brandId;
+      // console.log(obj);
       // 提交商品标题名称分类品牌
-      postCommodity(obj).then(res=>{
+      // postCommodity(obj).then(res=>{
+        // console.log(res);
+        // if(res.data.code == 0){
+        //   this.bannerimg.forEach(item=>{
+        //     // item.goodsId = res.data.data
+        //     item.goodsId = 44
+        //   })
+          // 提交轮播图
+          // postGoodsImgs(this.bannerimg).then(res=>{
+          //   console.log(res);
+          // })
+        // }
+      // })
+      // 提交规格
+      postSpecImgs(this.$store.state.specImg).then(res=>{
         console.log(res);
       })
+
     }
   }
 };
@@ -690,10 +735,13 @@ export default {
       margin-bottom: 10px;
       padding: 20px;
       border-radius: 7px;
-      font-size: 14px;
+      font-size: 12px;
       background-color: #f8f8f8;
       .stronger {
         font-weight: 700;
+      }
+      span {
+        padding-left: 40px;
       }
       p {
         line-height: normal;

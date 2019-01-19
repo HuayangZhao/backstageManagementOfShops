@@ -8,8 +8,10 @@ import  OnLineGoods from '@/views/goods/onLineGoods'
 import  UploadRecord from '@/views/goods/uploadRecord'
 import  GoodsDrafts from '@/views/goods/drafts'
 import  RecycleBin from '@/views/goods/recycleBin'
+import  Classification from '@/views/goods/classification'
 import  Evaluate from '@/views/goods/evaluate'
 import  OrderList from '@/views/order/orderList'
+import  CreateFreight from '@/views/order/createFreight'
 import  Freight from '@/views/order/freight'
 import  FreightTemplate from '@/views/order/freightTemplate'
 import  TemplateDetails from '@/views/order/templateDetails'
@@ -36,6 +38,12 @@ export default new Router({
       name: 'Index',
       component: Index,
       children:[
+        {path:'classification',name: 'Classification',component: Classification},
+
+
+
+
+        {path:'createFreight',name: 'CreateFreight',component:CreateFreight},
         {path:'publishNewGoods',name: 'NewGoods',component: NewGoods},
         {path:'createNewGoods',name: 'CreateGoods',component: CreateGoods},
         {path:'drafts',name: 'GoodsDrafts',component: GoodsDrafts},
