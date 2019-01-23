@@ -17,7 +17,7 @@
             <el-menu-item index="3">处理中心</el-menu-item>
             <el-menu-item index="4">处理中心</el-menu-item>
             <el-menu-item index="5">处理中心</el-menu-item>
-            <el-menu-item index="6">处理中心</el-menu-item>
+            <el-menu-item index="6">下载APP</el-menu-item>
             <el-menu-item index="7">消息中心</el-menu-item>
           </el-menu>
           <div class="line"></div>
@@ -35,7 +35,7 @@
                 <i class="el-icon-goods"></i>
                 <span>商品管理</span>
               </template>
-                <el-menu-item index="/classification">新商品发布</el-menu-item>
+                <el-menu-item index="/createNewGoods">新商品发布</el-menu-item>
                 <el-menu-item index="/goodsList">商品列表</el-menu-item>
                 <el-menu-item index="/evaluate">评价管理</el-menu-item>
             </el-submenu>
@@ -76,8 +76,8 @@
                 <i class="el-icon-sold-out"></i>
                 <span>数据中心</span>
               </template>
-              <el-menu-item index="5-1">经营总览</el-menu-item>
-              <el-menu-item index="5-2">商品数据</el-menu-item>
+              <el-menu-item index="/businessOverview">经营总览</el-menu-item>
+              <el-menu-item index="/goodsData">商品数据</el-menu-item>
               <el-menu-item index="5-3">店铺数据</el-menu-item>
               <el-menu-item index="5-4">售后服务质量</el-menu-item>
             </el-submenu>
@@ -86,7 +86,7 @@
                 <i class="el-icon-loading"></i>
                 <span>账户资金</span>
               </template>
-              <el-menu-item index="6-1">贷款账户</el-menu-item>
+              <el-menu-item index="/loanAccount">贷款账户</el-menu-item>
               <el-menu-item index="6-2">保证金</el-menu-item>
               <el-menu-item index="6-3">发票管理</el-menu-item>
               <el-menu-item index="6-4">贷款扣款明细</el-menu-item>

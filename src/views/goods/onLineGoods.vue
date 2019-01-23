@@ -114,11 +114,10 @@
     margin-top: 20px;
     position: relative;
     .creatBut {
-      position: absolute;
-      top: 2px;
+      float: right;
+      margin-right: 30px;
       cursor: pointer;
-      left: 350px;
-      z-index: 9999999;
+
     }
   }
   .waring {

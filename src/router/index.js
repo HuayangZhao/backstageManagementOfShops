@@ -29,6 +29,9 @@ import  StoreManagement from '@/views/storeManagement/index'
 import  EssentialInformation from '@/views/storeManagement/essentialInformation'
 import  QualificationInformation from '@/views/storeManagement/qualificationInformation'
 import  OrderInvoice from '@/views/storeManagement/orderInvoice'
+import  BusinessOverview from '@/views/dataCenter/businessOverview'
+import  GoodsData from '@/views/dataCenter/goodsData'
+import  LoanAccount from '@/views/account/loanAccount'
 Vue.use(Router)
 
 export default new Router({
@@ -38,11 +41,6 @@ export default new Router({
       name: 'Index',
       component: Index,
       children:[
-        {path:'classification',name: 'Classification',component: Classification},
-
-
-
-
         {path:'createFreight',name: 'CreateFreight',component:CreateFreight},
         {path:'publishNewGoods',name: 'NewGoods',component: NewGoods},
         {path:'createNewGoods',name: 'CreateGoods',component: CreateGoods},
@@ -54,6 +52,9 @@ export default new Router({
         {path:'package',name: 'Package',component: Package},
         {path:'shortage',name: 'Shortage',component: Shortage},
         {path:'orderInvoice',name: 'OrderInvoice',component: OrderInvoice},
+        {path:'businessOverview',name: 'BusinessOverview',component: BusinessOverview},
+        {path:'goodsData',name: 'GoodsData',component: GoodsData},
+        {path:'loanAccount',name: 'LoanAccount',component: LoanAccount},
         {path:'storeManagement',name: 'StoreManagement',component: StoreManagement,redirect:'storeManagement/essentialInformation',
           children:[
             {path:'essentialInformation',name: 'EssentialInformation',component: EssentialInformation},

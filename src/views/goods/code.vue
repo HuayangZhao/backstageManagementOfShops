@@ -5,8 +5,8 @@
     :show-file-list="false"
     :on-success="handleAvatarSuccess"
     :before-upload="beforeAvatarUpload"
-    :on-remove="handleRemove">
-    <!--:on-change="handleChange"-->
+    :disabled="isUpload"
+    >
     <img v-if="imageUrl" :src="imageUrl" class="avatar">
     <i v-else class="el-icon-plus avatar-uploader-icon"></i>
   </el-upload>
@@ -42,28 +42,28 @@
     props:["tagName"],
     data() {
       return {
-        imageUrl: ''
+        imageUrl: '',
+        isUpload:false
       };
     },
     methods: {
       handleAvatarSuccess(res, file) {
+        this.isUpload = true
         file.tag = this.tagName
         let obj = {}
-        obj.tag = file.tag
-        obj.url = res.data.url
-        this.$store.commit("pushSpecImg",obj)
+        obj.name = file.tag
+        obj.optionImg = res.data.url
+        obj.qiniuId = res.data.id
+        obj.specificationId = this.$store.state.shopId
+        this.$emit('getTagImg',obj)
         this.imageUrl = URL.createObjectURL(file.raw);
       },
       handleChange(file, fileList){
         console.log(file);
       },
-      handleRemove(file, fileList){
-        console.log(file);
-      },
       beforeAvatarUpload(file) {
         const isJPG = file.type === 'image/jpeg';
         const isLt2M = file.size / 1024 / 1024 < 2;
-
         if (!isJPG) {
           this.$message.error('上传头像图片只能是 JPG 格式!');
         }

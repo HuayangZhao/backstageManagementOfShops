@@ -9,10 +9,10 @@ export const getAllSelectList = ()=>axios.get( '/category/selectList')
 export const getGoodsBrandByCategory = (id)=>axios.get( '/brand/getGoodsBrandByCategoryId/'+ id)
 // 获取所有的规格
 export const getAllSpec = ()=>axios.get( '/productSpecOption/getAll')
-// 提交上架 分表提交
-// 1.商品表
+// 提交上架
 export const postCommodity = (data)=>axios.post( '/product/add',data)
-// 2.提交轮播图
-export const postGoodsImgs = (data)=>axios.post( '/tbProductPicture',data)
-// 3.提交规格
-export const postSpecImgs = (data)=>axios.post( '/productSpecOption/add',data)
+//获取所有商品
+export const getAllGoods = ()=>axios.get( '/product/getGoods')
+// 根据ID删商品
+export const delGoods = (id)=>axios.post( '/product/getGoods',{id:id})
+
