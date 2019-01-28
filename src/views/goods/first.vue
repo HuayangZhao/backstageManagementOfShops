@@ -3,6 +3,7 @@
     <el-table
       ref="multipleTable"
       border
+      v-loading="loading"
       :header-cell-style="{background:'#F6F6F6',fontWeight:'700',color:'#000'}"
       :data="goodsListData1"
       tooltip-effect="dark"
@@ -28,7 +29,6 @@
               <p>商品ID：{{scope.row.id}}</p>
             </div>
           </div>
-
         </template>
       </el-table-column>
       <el-table-column
@@ -37,12 +37,12 @@
         label="当前价"
       >
       </el-table-column>
-      <el-table-column
-        prop=""
-        align="center"
-        label="单购价"
-        show-overflow-tooltip>
-      </el-table-column>
+      <!--<el-table-column-->
+        <!--prop=""-->
+        <!--align="center"-->
+        <!--label="单购价"-->
+        <!--show-overflow-tooltip>-->
+      <!--</el-table-column>-->
       <el-table-column
         prop=""
         align="center"
@@ -79,7 +79,6 @@
           <el-button type="warning"  size="mini" v-if="scope.row.frameStatus == 0">待上架</el-button>
           <el-button type="success" size="mini" v-if="scope.row.frameStatus == 1">已上架</el-button>
           <el-button type="info" size="mini" v-if="scope.row.frameStatus == 2">已下架</el-button>
-          <el-button type="primary" size="mini" icon="el-icon-edit" v-if="scope.row.frameStatus == 3">编辑中</el-button>
         </template>
       </el-table-column>
       <el-table-column
@@ -95,17 +94,15 @@
             style="margin-bottom: 10px"
             @click="handleEdit(scope.$index, scope.row)">编辑
           </el-button>
-          <el-button
-            type="text"
-            size="mini"
-            style="margin-bottom: 10px"
-            @click="handleEdit(scope.$index, scope.row)">下架
+          <el-button type="text" size="mini" style="margin-bottom: 10px" @click="handleLower(scope.$index, scope.row)"
+                     v-if="scope.row.frameStatus == 2 || scope.row.frameStatus == 0"
+          >
+            上架
           </el-button>
-          <el-button
-            size="mini"
-            type="text"
-            style="margin-left: -8px"
-            @click="handleEdit(scope.$index, scope.row)">置顶
+          <el-button type="text" size="mini" style="margin-bottom: 10px" @click="handleLower(scope.$index, scope.row)"
+                     v-if="scope.row.frameStatus == 1"
+          >
+            下架
           </el-button>
           <el-button
             size="mini"
@@ -117,8 +114,8 @@
     </el-table>
     <div class="row">
         <div>
-          <el-button plain>批量上架</el-button>
-          <el-button plain>批量下架</el-button>
+          <el-button plain @click="batchOperation(1)">批量上架</el-button>
+          <el-button plain @click="batchOperation(2)">批量下架</el-button>
         </div>
         <div class="grid-content">
           <el-pagination
@@ -133,13 +130,21 @@
         </div>
     </div>
   </div>
-
 </template>
 <script>
-  import {getAllGoods,delGoods} from "@/api/axios"
+  function getCascaderObj(val,opt) {
+    return val.map(function (value, index, array) {
+      for (var itm of opt) {
+        if (itm.value == value) { opt = itm.children; return itm; }
+      }
+      return null;
+    });
+  }
+  import {getAllGoods,delGoods,updateGoodsByFrameStatus,getOneProduct} from "@/api/axios"
   export default {
     data() {
       return {
+        loading:true,
         currentPage4: 4,
         goodsListData: [],
         multipleSelection: []
@@ -149,33 +154,55 @@
       this.getGoodsList()
     },
     methods: {
+      // 获取所有列表
       getGoodsList(){
+        this.loading = true
        getAllGoods().then(res=>{
-         console.log(res);
+
          if(res.data.data !== 1){
            this.goodsListData = res.data.data
+           this.loading = false
          }else {
            this.$message.error('请求错误，请刷新页面重试');
          }
        })
       },
-      toggleSelection(rows) {
-        if (rows) {
-          rows.forEach(row => {
-            this.$refs.multipleTable.toggleRowSelection(row);
-          });
-        } else {
-          this.$refs.multipleTable.clearSelection();
-        }
-      },
-      handleSelectionChange(val) {
-        console.log(val);
-        this.multipleSelection = val;
-      },
-      // 编辑删除
+      // 编辑
       handleEdit(index, row) {
-        console.log(index, row);
+        getOneProduct(row.id).then(res=>{
+          console.log(res);
+          if(res.data.data != "1"){
+            this.$store.commit('setGoodsInfo',res.data.data)
+            this.$router.push({path:'/editGoods'})
+          }
+        })
       },
+      // 上下架
+      handleLower(index, row) {
+          this.$confirm('确认下架商品?', '提示', {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            type: 'warning'
+          }).then(() => {
+            let status ;
+            row.frameStatus !== 1? status = "1":status = "2"
+            updateGoodsByFrameStatus(row.id,status).then(res=>{
+              if(res.data.data === 0){
+                this.getGoodsList()
+                this.$message({
+                  type: 'success',
+                  message: '操作成功!'
+                });
+              }else {
+                this.$message({
+                  type: 'error',
+                  message: '请求失败，请重试!'
+                });
+              }
+            })
+          }).catch(() => {});
+      },
+      // 删除
       handleDelete(index, row) {
         console.log(index, row);
         this.$confirm('是否确认删除?', '提示', {
@@ -186,18 +213,50 @@
           this.goodsListData.splice(index,1)
           delGoods(row.id).then(res=>{
             console.log(res);
-            if(res.data.)
+            if(res.data.data === 0){
+              this.$message({
+                type: 'success',
+                message: '删除成功!'
+              });
+            }else {
+              this.$message({
+                type: 'error',
+                message: '请求失败，请重试!'
+              });
+            }
           })
-          this.$message({
-            type: 'success',
-            message: '删除成功!'
-          });
-        }).catch(() => {
-          // this.$message({
-          //   type: 'info',
-          //   message: '已取消删除'
-          // });
-        });
+        }).catch(() => {});
+      },
+      // 表格多选
+      handleSelectionChange(val) {
+        this.multipleSelection = val;
+      },
+      // 批量操作
+      batchOperation(val){
+        if(this.multipleSelection.length == 0){
+          return
+        }
+        let goodsId = []
+        this.multipleSelection.forEach(item=>{
+          goodsId.push(item.id)
+        })
+        let status ;
+        val == 1 ? status = "1":status = "2"
+        console.log(status);
+        updateGoodsByFrameStatus(goodsId.join(','),status).then(res=>{
+          if(res.data.data === 0){
+            this.getGoodsList()
+            this.$message({
+              type: 'success',
+              message: '操作成功!'
+            });
+          }else {
+            this.$message({
+              type: 'error',
+              message: '请求失败，请重试!'
+            });
+          }
+        })
       },
       // 分页
       handleSizeChange(val) {
@@ -210,14 +269,20 @@
     computed:{
       goodsListData1(){
         return this.goodsListData
+      },
+      productC(){
+        return this.product
       }
     }
   }
 </script>
 <style lang="less" scoped>
+  .goodsBaseInfo{
+    width: 90%;
+    margin-top: 10px;
+  }
     .goodsImg {
       display: flex;
-
       .img_Box {
         flex-shrink:0;
         width: 70px;

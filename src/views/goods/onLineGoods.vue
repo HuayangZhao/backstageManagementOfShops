@@ -92,9 +92,7 @@
     }
   };
 </script>
-
 <style lang="less" scoped>
-  
   .search {
     margin-top: 20px;
     display: flex;

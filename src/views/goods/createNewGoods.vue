@@ -16,12 +16,12 @@
           <h3>
             <span>1</span>商品基本信息
           </h3>
-          <el-form-item label="商品分类" prop="classifySelectedId">
-            <el-cascader placeholder="试试搜索：指南"
+          <el-form-item label="商品分类" prop="parentIds1">
+            <el-cascader placeholder="试试搜索：服装"
                          :options="classifyOptions"
                          filterable
                          style="width: 300px"
-                         v-model=product.classifySelectedId
+                         v-model=product.parentIds1
                          @change="classification"
             ></el-cascader>
             <span v-text="'您已选择 ：' + classifySelectedName.join(' > ')" style="font-size: 14px;font-weight: 600;color: blue"></span>
@@ -223,12 +223,14 @@ export default {
       product:{
           title:"",
           name:"",
+          shopId:3,
           brandId:null,
           categoryId:null,
           warnStock:10,
         videoImgUrl:'',
           // 选择分类的ID
-          classifySelectedId: [],
+        parentIds1: [],
+        parentIds: '1',
         },
       brandOptions:[],
       // 所有分类
@@ -271,7 +273,7 @@ export default {
       skuCode:'',
       goodsCode:'',
       rules: {
-        classifySelectedId:[
+        parentIds1:[
           { required: true, message: "请选择商品分类", trigger: "change" },
         ],
         name: [
@@ -334,14 +336,15 @@ export default {
     },
     // 每次选择的分类value和label
     classification(value){
-      this.product.classifySelectedId = value
+      console.log(value);
+      this.product.parentIds1 = value
       this.product.categoryId = value[value.length-1]
       this.vals=getCascaderObj(value, this.classifyOptions);
       let classifyName = []
       this.vals.forEach(item=>{
         classifyName.push(item.label)
       })
-      console.log(this.product);
+      // console.log(this.product);
       this.product.brandId = null
       this.classifySelectedName = classifyName
       // 通过分类ID获取品牌
@@ -571,6 +574,8 @@ export default {
             item.optionImg = ''
           })
         }
+        let parentIds = this.product.parentIds1.join(",")
+        this.product.parentIds = parentIds
         let obj = {}
         obj.product = this.product
         obj.productPicture = this.productPicture

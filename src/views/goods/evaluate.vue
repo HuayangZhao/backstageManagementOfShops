@@ -99,13 +99,10 @@
           <el-tab-pane label="全部评价" name="first">
             <evaluateComponent number="20" :tableData="tableData"></evaluateComponent>
           </el-tab-pane>
-          <el-tab-pane label="有评价内容" name="second">
+          <el-tab-pane label="初评评价" name="second">
             <evaluateComponent number="20" :tableData="tableData"></evaluateComponent>
           </el-tab-pane>
-          <el-tab-pane label="无评价内容" name="third">
-            <evaluateComponent number="20" :tableData="tableData"></evaluateComponent>
-          </el-tab-pane>
-          <el-tab-pane label="有追加内容" name="fourth">
+          <el-tab-pane label="追加评价" name="fourth">
             <evaluateComponent number="20" :tableData="tableData"></evaluateComponent>
           </el-tab-pane>
           <el-tab-pane label="已举报的评价" name="five">
@@ -135,7 +132,7 @@
           return {
             tableData: [{
               id: '246354646',
-              address: '上海市普陀区金沙江路 1518 弄',
+              address: '上海市普陀区金固化剂固化剂复古怀旧复古怀旧复古印花风格化的规范化的规范化风格化的分隔号的分隔号沙江路 1518 弄',
               numb: 200333
             }, {
               date: '2016-05-02',

@@ -5,11 +5,13 @@
         :header-cell-style="{background:'#F3F4F8',fontWeight:'700',color:'#000'}"
         border
         :data="tableData"
+        tooltip-effect="light"
         style="width: 100%">
         <el-table-column
           align="center"
           prop="address"
           label="评价内容"
+          show-overflow-tooltip
        >
         </el-table-column>
         <el-table-column
@@ -19,9 +21,16 @@
         >
         </el-table-column>
         <el-table-column
+          prop="numb"
+          label="订单"
+          align="center"
+        >
+        </el-table-column>
+        <el-table-column
           prop="address"
           align="center"
-          label="商品信息">
+          label="商品名称"
+          show-overflow-tooltip>
         </el-table-column>
         <el-table-column
           label="操作"

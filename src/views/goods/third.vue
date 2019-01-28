@@ -1,6 +1,6 @@
 <template>
   <div>
-    这是第三页
+    这里面放库存为0的上架商品
   </div>
 
 </template>
