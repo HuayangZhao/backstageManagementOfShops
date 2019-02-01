@@ -1,6 +1,6 @@
 <template>
     <div class="orderList">
-      <h2>订单列表查询</h2>
+      <h2><router-link to="/orderIndex/orderAllList">订单列表</router-link> > 订单列表查询</h2>
       <hr>
       <div class="seachOrder">
           <div class="itemBox">
@@ -24,94 +24,97 @@
         <div class="search">
           <div>
             <span>订单编号：</span>
-            <el-input  placeholder="请输入内容" style="width:200px" size="mini"></el-input>
+            <el-input  placeholder="请输入订单编号" style="width:200px" size="mini" v-model="search.orderId" ></el-input>
           </div>
           <div>
             <span>商品ID：</span>
-            <el-input  placeholder="请输入内容" style="width:200px" size="mini"></el-input>
+            <el-input  placeholder="ID查询时不要填写其他选项" style="width:200px" size="mini" v-model="search.productId"></el-input>
           </div>
           <div>
             <span>收货手机：</span>
-            <el-input  placeholder="请输入内容" style="width:200px" size="mini"></el-input>
+            <el-input  placeholder="请输入收货手机" style="width:200px" size="mini" v-model="search.telphone"></el-input>
           </div>
           <div>
             <span>快递单号：</span>
-            <el-input  placeholder="请输入内容" style="width:200px" size="mini"></el-input>
+            <el-input  placeholder="请输入快递单号" style="width:200px" size="mini" v-model="search.orderlogisticsId"></el-input>
           </div>
           <div>
             <span>订单状态：</span>
-            <el-select size="mini" v-model="values">
-              <el-option label="全部" value="all"></el-option>
-              <el-option label="待发货" value="0"></el-option>
-              <el-option label="已发货" value="1"></el-option>
-              <el-option label="已签收" value="1"></el-option>
-              <el-option label="已申请缺货" value="1"></el-option>
-              <el-option label="待付尾款" value="1"></el-option>
+            <el-select size="mini" v-model="search.orderStatus" style="width:200px">
+              <el-option label="全部" value="0"></el-option>
+              <el-option label="未付款" value="-1"></el-option>
+              <el-option label="已付款" value="1"></el-option>
+              <el-option label="已发货" value="2"></el-option>
+              <el-option label="已签收" value="3"></el-option>
+              <el-option label="退货申请" value="4"></el-option>
+              <el-option label="退货中" value="5"></el-option>
+              <el-option label="已退货" value="6"></el-option>
+              <el-option label="取消交易" value="7"></el-option>
             </el-select>
           </div>
-          <div>
-            <span>售后状态：</span>
-            <el-select size="mini" v-model="values">
-              <el-option label="全部" value="all"></el-option>
-              <el-option label="无售后/售后处理中" value="0"></el-option>
-              <el-option label="无售后/取消售后" value="1"></el-option>
-              <el-option label="售后处理中" value="1"></el-option>
-              <el-option label="退款中" value="1"></el-option>
-              <el-option label="退款成功" value="1"></el-option>
-            </el-select>
-          </div>
-          <div>
-            <span>承诺发货时间：</span>
-            <el-select size="mini" v-model="values">
-              <el-option label="全部" value="all"></el-option>
-              <el-option label="已过发货时间" value="0"></el-option>
-              <el-option label="12小时内需发货" value="1"></el-option>
-              <el-option label="今天需要发货" value="1"></el-option>
-              <el-option label="三天内要发货" value="1"></el-option>
-              <el-option label="三天后要发货" value="1"></el-option>
-            </el-select>
-          </div>
-          <div>
-            <span>剩余揽件时间：</span>
-            <el-select size="mini" v-model="values">
-              <el-option label="不限" value="all"></el-option>
-              <el-option label="12H内需揽件" value="0"></el-option>
-              <el-option label="24H内需揽件" value="1"></el-option>
-              <el-option label="36H内需揽件" value="1"></el-option>
-              <el-option label="48H内需揽件" value="1"></el-option>
-            </el-select>
-          </div>
-          <div>
-            <span>是否抽奖/0元试用：</span>
-            <el-select size="mini" v-model="values">
-              <el-option label="否" value="all"></el-option>
-              <el-option label="是" value="0"></el-option>
-              <el-option label="全部" value="1"></el-option>
-            </el-select>
-          </div>
+          <!--<div>-->
+            <!--<span>售后状态：</span>-->
+            <!--<el-select size="mini" v-model="values">-->
+              <!--<el-option label="全部" value="all"></el-option>-->
+              <!--<el-option label="无售后/售后处理中" value="0"></el-option>-->
+              <!--<el-option label="无售后/取消售后" value="1"></el-option>-->
+              <!--<el-option label="售后处理中" value="1"></el-option>-->
+              <!--<el-option label="退款中" value="1"></el-option>-->
+              <!--<el-option label="退款成功" value="1"></el-option>-->
+            <!--</el-select>-->
+          <!--</div>-->
+          <!--<div>-->
+            <!--<span>承诺发货时间：</span>-->
+            <!--<el-select size="mini" v-model="values">-->
+              <!--<el-option label="全部" value="all"></el-option>-->
+              <!--<el-option label="已过发货时间" value="0"></el-option>-->
+              <!--<el-option label="12小时内需发货" value="1"></el-option>-->
+              <!--<el-option label="今天需要发货" value="1"></el-option>-->
+              <!--<el-option label="三天内要发货" value="1"></el-option>-->
+              <!--<el-option label="三天后要发货" value="1"></el-option>-->
+            <!--</el-select>-->
+          <!--</div>-->
+          <!--<div>-->
+            <!--<span>剩余揽件时间：</span>-->
+            <!--<el-select size="mini" v-model="values">-->
+              <!--<el-option label="不限" value="all"></el-option>-->
+              <!--<el-option label="12H内需揽件" value="0"></el-option>-->
+              <!--<el-option label="24H内需揽件" value="1"></el-option>-->
+              <!--<el-option label="36H内需揽件" value="1"></el-option>-->
+              <!--<el-option label="48H内需揽件" value="1"></el-option>-->
+            <!--</el-select>-->
+          <!--</div>-->
+          <!--<div>-->
+            <!--<span>是否抽奖/0元试用：</span>-->
+            <!--<el-select size="mini" v-model="values">-->
+              <!--<el-option label="否" value="all"></el-option>-->
+              <!--<el-option label="是" value="0"></el-option>-->
+              <!--<el-option label="全部" value="1"></el-option>-->
+            <!--</el-select>-->
+          <!--</div>-->
           <div>
             <span>收件人姓名：</span>
-            <el-input  placeholder="请输入内容" style="width:200px" size="mini"></el-input>
+            <el-input  placeholder="请输入内容" style="width:200px" size="mini" v-model="search.name"></el-input>
           </div>
-          <div>
-            <span>拼单成功时间：</span>
-            <el-date-picker
-              v-model="value7"
-              type="daterange"
-              align="right"
-              size="mini"
-              unlink-panels
-              range-separator="至"
-              start-placeholder="开始日期"
-              end-placeholder="结束日期"
-              :picker-options="pickerOptions2">
-            </el-date-picker>
-          </div>
+          <!--<div>-->
+            <!--<span>拼单成功时间：</span>-->
+            <!--<el-date-picker-->
+              <!--v-model="value7"-->
+              <!--type="daterange"-->
+              <!--align="right"-->
+              <!--size="mini"-->
+              <!--unlink-panels-->
+              <!--range-separator="至"-->
+              <!--start-placeholder="开始日期"-->
+              <!--end-placeholder="结束日期"-->
+              <!--:picker-options="pickerOptions2">-->
+            <!--</el-date-picker>-->
+          <!--</div>-->
         </div>
         <div style="text-align: center;padding-bottom: 10px;">
-          <el-button type="danger" size="mini">查询</el-button>
+          <el-button type="danger" size="mini" @click="searchOrder">查询</el-button>
           <el-button size="mini">批量导出</el-button>
-          <el-button size="mini">查看以生产报表</el-button>
+          <!--<el-button size="mini">查看以生产报表</el-button>-->
         </div>
       </div>
       <div>
@@ -131,48 +134,42 @@
           border
           style="width: 100%">
           <el-table-column
-            prop="id"
+            prop="productId"
             align="center"
             label="商品ID"
             >
           </el-table-column>
           <el-table-column
-            prop="name"
+            prop="productName"
             align="center"
             label="商品名称"
             >
           </el-table-column>
           <el-table-column
-            prop="amount3"
+            prop="orderStatus"
             align="center"
             label="订单状态">
           </el-table-column>
           <el-table-column
-            prop="name"
-            align="center"
-            label="售后状态"
-           >
-          </el-table-column>
-          <el-table-column
-            prop="name"
+            prop="userId"
             align="center"
             label="买家"
            >
           </el-table-column>
           <el-table-column
-            prop="name"
+            prop="totalPrice"
             align="center"
             label="商品总价"
            >
           </el-table-column>
           <el-table-column
-            prop="name"
+            prop="count"
             align="center"
             label="数量"
             >
           </el-table-column>
           <el-table-column
-            prop="name"
+            prop="price"
             align="center"
             label="支付金额">
           </el-table-column>
@@ -192,6 +189,7 @@
 </template>
 
 <script>
+  import {getAllOrders} from  "@/api/order"
     export default {
         name: "orderList",
       data(){
@@ -224,9 +222,37 @@
                 }
               }]
             },
-            value7: '',
-            values:'',
+            values:"",
+            search:{
+              telphone:null,
+              productId:null,
+              orderlogisticsId:null,
+              orderStatus:null,
+              name:null,
+              orderId:null,
+              userId:null,
+            }
           }
+      },
+      methods:{
+        searchOrder(){
+          let falg = false
+            for(var value in this.search){
+              if(this.search[value]){
+                falg = true
+                break;
+              }
+            }
+            if(falg){
+              getAllOrders(this.search).then(res=>{
+                console.log(res);
+                if(res.data.data!==1){
+                  this.tableData = res.data.data
+                }
+              })
+            }
+
+        }
       }
     }
 </script>

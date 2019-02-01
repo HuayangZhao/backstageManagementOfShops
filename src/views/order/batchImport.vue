@@ -26,7 +26,7 @@
         </div>
         <div class="muban">
           <el-button type="danger" size="mini">导入批量发货文件</el-button>
-          <a href="/src/assets/new_import_excel_sample .xlsx" download="new_import_excel_sample .xlsx">下载发货模板</a>
+          <a href="/static/new_import_excel_sample%20.xlsx" download="new_import_excel_sample .xlsx">下载发货模板</a>
         </div>
       </div>
 

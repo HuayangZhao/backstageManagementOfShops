@@ -16,8 +16,7 @@
       </el-table-column>
       <el-table-column
         label="商品信息"
-        width="400"
-      >
+        width="400">
         <template slot-scope="scope">
           <div class="goodsImg">
             <div class="img_Box">
@@ -39,41 +38,35 @@
       <el-table-column
         prop=""
         align="center"
-        label="单购价"
-        show-overflow-tooltip>
+        label="单购价">
       </el-table-column>
       <el-table-column
         prop=""
         align="center"
-        label="收藏数"
-        show-overflow-tooltip>
+        label="收藏数">
       </el-table-column>
       <el-table-column
         sortable
         prop=""
         align="center"
-        label="库存"
-        show-overflow-tooltip>
+        label="库存">
       </el-table-column>
       <el-table-column
         prop=""
         sortable
         align="center"
-        label="累计销量"
-        show-overflow-tooltip>
+        label="累计销量">
       </el-table-column>
       <el-table-column
         prop=""
         sortable
         align="center"
-        label="近30天销量"
-        show-overflow-tooltip>
+        label="近30天销量">
       </el-table-column>
       <el-table-column
         prop="frameStatus"
         align="center"
-        label="在售状态"
-        show-overflow-tooltip>
+        label="在售状态">
         <template slot-scope="scope">
           <el-button type="primary" size="mini" >在售中</el-button>
         </template>
@@ -82,8 +75,7 @@
         prop="address"
         label="操作"
         align="center"
-        width="100"
-      >
+        width="100">
         <template slot-scope="scope">
           <el-button
             size="mini"
@@ -163,8 +155,9 @@
 
 </template>
 <script>
-  import {getAllUpperGoods} from "@/api/axios"
+  import {getAllUpperGoods,delGoods} from "@/api/axios"
   export default {
+    props:['goodsListData'],
     data() {
       return {
         loading:true,
@@ -211,13 +204,8 @@
             { required: true, message: '请填写活动形式', trigger: 'blur' }
           ]
         },
-
-
-
-
         formLabelWidth: '120px',
         currentPage4: 4,
-        goodsListData: [],
         multipleSelection: []
       }
     },
@@ -226,8 +214,8 @@
     },
     methods: {
       getGoodsList(){
-        this.loading = true
-        getAllUpperGoods('1').then(res=>{
+          this.loading = true
+          getAllUpperGoods('1').then(res=>{
           if(res.data.data !== 1){
             this.goodsListData = res.data.data
             this.loading = false
@@ -252,33 +240,25 @@
       // 编辑删除
       handleEdit(index, row) {
         console.log(index, row);
-
         this.dialogFormVisible = true
         // this.$router.push({path:'/editGoods'})
       },
       handleDelete(index, row) {
-        console.log(index, row);
+        // console.log(index, row);
         this.$confirm('是否确认删除?', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
-          this.goodsListData.splice(index,1)
           delGoods(row.id).then(res=>{
             console.log(res);
             if(res.data.data === 0){
-              this.$message({
-                type: 'success',
-                message: '删除成功!'
-              });
+              this.goodsListData.splice(index,1)
+              this.$message({type: 'success', message: '删除成功!'});
             }else {
-              this.$message({
-                type: 'error',
-                message: '请求失败，请重试!'
-              });
+              this.$message({type: 'error', message: '请求失败，请重试!'});
             }
           })
-
         }).catch(() => {
           // this.$message({
           //   type: 'info',

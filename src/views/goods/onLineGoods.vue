@@ -6,48 +6,41 @@
         <div class="search">
             <div>
                 <span>商品ID</span>
-                <el-input  placeholder="请输入内容" style="width:200px" size="mini"></el-input>
+                <el-input  placeholder="用ID查找时不要输入其他选项" style="width:200px" size="mini" type="number" v-model="searchData.id"></el-input>
             </div>
             <div>
                 <span>商品编码</span>
-                <el-input  placeholder="请输入内容" style="width:200px" size="mini"></el-input>
+                <el-input  placeholder="请输入商品编码" style="width:200px" size="mini" v-model="searchData.code"></el-input>
             </div>
             <div>
                 <span>商品名称</span>
-                <el-input  placeholder="请输入内容" style="width:200px" size="mini"></el-input>
+                <el-input  placeholder="请输入商品名称" style="width:200px" size="mini" v-model="searchData.name"></el-input>
             </div>
             <div>
                 <span>商品分类</span>
                 <el-cascader
-                  placeholder="试试搜索：指南"
-                  :options="options"
+                  placeholder="试试搜索：服装"
+                  :options="classifyOptions"
                   filterable
                   size="mini"
+                  v-model=selectCategoryId
                   change-on-select
                 ></el-cascader>
             </div>
             <div>
                 <span>累计销量</span>
-                <el-input style="width:80px" size="mini"></el-input>
+                <el-input style="width:80px" size="mini" type="number" v-model="searchData.salesMax" placeholder="最小值"></el-input>
                 -
-                <el-input style="width:80px" size="mini"></el-input>
-            </div>
-            <div>
-                <span>是否预售</span>
-                <el-select size="mini" v-model="values">
-                    <el-option label="全部" value="all"></el-option>
-                    <el-option label="是" value="0"></el-option>
-                    <el-option label="否" value="1"></el-option>
-                </el-select>
+                <el-input style="width:80px" size="mini" type="number" v-model="searchData.salesMin" placeholder="最大值"></el-input>
             </div>
            <div>
                 <span>当前价</span>
-                <el-input style="width:80px" size="mini"></el-input>
+                <el-input style="width:80px" size="mini" v-model="searchData.priceMin"  placeholder="最小值"></el-input>
                 -
-                <el-input style="width:80px" size="mini"></el-input>
+                <el-input style="width:80px" size="mini" v-model="searchData.priceMax"  placeholder="最大值"></el-input>
             </div>
             <div>
-                <el-button type="danger" size="mini" style="width: 100px">查询</el-button>
+                <el-button type="danger" size="mini" style="width: 100px" @click="searchGoods">查询</el-button>
             </div>
         </div>
         <div class="tabBox">
@@ -58,7 +51,7 @@
                 <el-tab-pane label="已售罄" name="third"></el-tab-pane>
                 <el-tab-pane label="已下架" name="fourth"></el-tab-pane>
             </el-tabs>
-            <first :is="activeName" keep-alive></first>
+            <first :is="activeName" keep-alive :goodsListData="tableData" @successData="success(resData)"></first>
         </div>
     </div>
 </template>
@@ -67,6 +60,7 @@
   import second from './second'
   import third from './third'
   import fourth from './fourth'
+  import {getAllSelectList,getProductByAll} from "@/api/axios"
   export default {
     data() {
       return {
@@ -74,7 +68,24 @@
         activeName:'first',
         values:'',
         options: [],
+        // 所有分类
+        classifyOptions:[],
+        selectCategoryId:[],
+        searchData:{
+          categoryId:null,
+          code:null,
+          id:null,
+          name:null,
+          priceMax:null,
+          priceMin:null,
+          salesMax:null,
+          salesMin:null,
+        },
+        tableData:[]
       };
+    },
+    mounted(){
+      this.getAllCategory()
     },
     methods: {
       handleClick(tab, event) {
@@ -82,7 +93,46 @@
       },
       toPublishNewGoods(){
         this.$router.push({path:'/publishNewGoods'})
-      }
+      },
+      // 获取所有分类
+      getAllCategory(){
+          getAllSelectList().then(res => {
+            var newArr = [];
+            if(res.status == 200) {
+              res.data.forEach(item => {
+                if (item.parentId === 0) {
+                  item.children = [];
+                  newArr.push(item)
+                }
+              });
+              res.data.forEach(item => {
+                newArr.forEach(tisp => {
+                  if (item.parentId == tisp.value) {
+                    tisp.children.push(item)
+                  }
+                })
+              });
+              this.classifyOptions = newArr;
+            }
+          })
+      },
+      // 查询商品
+      searchGoods(){
+        if(this.searchData.categoryId === null && this.searchData.code === null && this.searchData.id === null && this.searchData.name === null && this.searchData.priceMax === null && this.searchData.priceMin === null){
+            return this.$message({message: '查询信息至少有一项不为空', type: 'warning'});
+        }
+        if(this.selectCategoryId.length > 0){
+          this.searchData.categoryId = this.selectCategoryId[this.selectCategoryId.length-1]
+        }
+        getProductByAll(this.searchData).then(res=>{
+          console.log(res);
+          if(res.data.data !== 1){
+              this.tableData = res.data.data
+          }else {
+            this.$message({message: '未查询到商品信息', type: 'warning'});
+          }
+        })
+      },
     },
     components:{
       first,

@@ -1,6 +1,6 @@
 <template>
   <div class="goodsDrafts">
-    <h2><router-link to="/goodsList/onLineGoods">线上商品</router-link> <i class="el-icon-caret-right"></i>草稿箱</h2>
+    <h2><router-link to="/goodsList/onLineGoods">线上商品</router-link> > 草稿箱</h2>
     <hr>
     <div class="waring">
       <i class="el-icon-warning"></i>
@@ -87,30 +87,23 @@
 </template>
 
 <script>
+  import {getGoodsByReviewStatus} from "@/api/axios"
     export default {
         name: "drafts",
       data(){
           return {
-            tableData:[
-              {
-                id: '12987122',
-                name: '王小虎',
-                amount1: '234',
-                amount2: '3.2',
-                amount3: 10
-              }
-            ]
+            tableData:[]
           }
       },
       methods :{
           // 创建新商品
         toPublishNewGoods(){
-          this.$router.push({path:'/publishNewGoods'})
+          this.$router.push({path:'/goodsIndex/createNewGoods'})
         },
         // 编辑删除
         handleEdit(index, row) {
           console.log(index, row);
-          this.$router.push({path:'/createNewGoods'})
+          this.$router.push({path:'/goodsIndex/createNewGoods'})
         },
         handleDelete(index, row) {
           console.log(index, row);

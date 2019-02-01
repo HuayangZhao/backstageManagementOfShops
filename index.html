@@ -4,9 +4,66 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1.0">
   <title>y</title>
+  <!--<style>-->
+    <!--.flexImgBox{-->
+      <!--position: fixed;-->
+      <!--left:90%;-->
+      <!--top: 20%;-->
+      <!--z-index: 1000000;-->
+      <!--cursor: move;-->
+    <!--}-->
+    <!--.flexTips {-->
+      <!--position: absolute;-->
+      <!--top:-50px;-->
+      <!--left: -60px;-->
+      <!--display: none;-->
+    <!--}-->
+    <!--.flexImgBox:hover>.flexTips {-->
+      <!--display: block;-->
+    <!--}-->
+  <!--</style>-->
 </head>
 <body>
 <div id="app"></div>
+<!--<div class="flexImgBox">-->
+  <!--<img src="static/QQ截图20190131155050.png" class="flexTips">-->
+  <!--<img src="static/2019-01-31_154022.png" class="flexImg">-->
+<!--</div>-->
+<script>
+  // let flexImgBox = document.querySelector(".flexImgBox");
+  // flexImgBox.onmousedown = function(event){
+  //   event = event || window.event;
+  //   let distanceX = event.clientX - flexImgBox.offsetLeft;
+  //   let distanceY = event.clientY - flexImgBox.offsetTop;
+  //   if(typeof flexImgBox.setCapture!='undefined'){
+  //     flexImgBox.setCapture();
+  //   }
+  //   document.onmousemove=function(event){
+  //     event = event || window.event;
+  //     let left=event.clientX-distanceX;
+  //     let top=event.clientY-distanceY;
+  //     if(left<0){
+  //       left=0;
+  //     }else if(left >window.innerWidth-flexImgBox.offsetWidth){
+  //       left = window.innerWidth-flexImgBox.offsetWidth;
+  //     }
+  //     if(top<0){
+  //       top=0;
+  //     }else if(top >window.innerHeight-flexImgBox.offsetHeight){
+  //       top = window.innerHeight-flexImgBox.offsetHeight;
+  //     }
+  //     flexImgBox.style.left = left + 'px';
+  //     flexImgBox.style.top = top + 'px';
+  //   };
+  //   document.onmouseup=function(){
+  //     document.onmousemove = null;
+  //     document.onmouseup = null;
+  //     if(typeof flexImgBox.releaseCapture!='undefined'){
+  //       flexImgBox.releaseCapture();
+  //     }
+  //   }
+  // };
+</script>
 <!-- built files will be auto injected -->
 </body>
 </html>

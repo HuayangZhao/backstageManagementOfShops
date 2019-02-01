@@ -5,6 +5,7 @@ import Index from '@/views'
 import  GoodsIndex from '@/views/goods/index'
 import  CreateGoods from '@/views/goods/createNewGoods'
 import  GoodsList from '@/views/goods/goodsList'
+import  GoodsInfo from '@/views/goods/goodsInfo'
 import  OnLineGoods from '@/views/goods/onLineGoods'
 import  UploadRecord from '@/views/goods/uploadRecord'
 import  Evaluate from '@/views/goods/evaluate'
@@ -15,6 +16,7 @@ import  EditGoods from '@/views/goods/editGoods'
 // 订单
 import  OrderIndex from '@/views/order/index'
 import  OrderList from '@/views/order/orderList'
+import  OrderAllList from '@/views/order/orderAllList'
 import  CreateFreight from '@/views/order/createFreight'
 import  Freight from '@/views/order/freight'
 import  FreightTemplate from '@/views/order/freightTemplate'
@@ -61,6 +63,7 @@ export default new Router({
             {path:'drafts',name: 'GoodsDrafts',component: GoodsDrafts},
             {path:'recycleBin',name: 'RecycleBin',component: RecycleBin},
             {path:'editGoods',name: 'EditGoods',component: EditGoods},
+            {path:'goodsInfo',name: 'GoodsInfo',component: GoodsInfo},
             {path:'goodsList',name: 'GoodsList',component: GoodsList,redirect:'goodsList/onLineGoods',
               children:[
                 {path:'uploadRecord',name: 'UploadRecord',component: UploadRecord},
@@ -71,6 +74,7 @@ export default new Router({
         },
         {path:'orderIndex',name: 'OrderIndex',component:OrderIndex,
           children:[
+            {path:'orderAllList',name: 'OrderAllList',component: OrderAllList},
             {path:'orderList',name: 'OrderList',component: OrderList},
             {path:'createFreight',name: 'CreateFreight',component:CreateFreight},
             {path:'templateDetails',name: 'TemplateDetails',component: TemplateDetails},

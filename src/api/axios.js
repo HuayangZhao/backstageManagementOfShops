@@ -3,6 +3,7 @@ export const removeImg = (id)=>axios.delete( 'http://192.168.0.129:4006/files/'+
 export const postImg = (data)=>axios.post( 'http://192.168.0.129:4006/files/',data)
 // 设置请求根路径
 axios.defaults.baseURL = 'http://192.168.0.129:8090';
+axios.timeout = 5000;
 // 获取所有行业分类
 export const getAllSelectList = ()=>axios.get( '/category/selectList')
 // 通过行业分类获取品牌
@@ -17,7 +18,7 @@ export const getAllGoods = ()=>axios.get( '/product/getGoods')
 export const delGoods = (id)=>axios.post( '/product/delete/'+ id,)
 // 获取所有上架商品
 export const getAllUpperGoods = (status)=>axios.get( '/product/getGoodsByFrameStatus?frameStatus='+ status)
-  // 根据分类末ID获取整条级联ID
+// 根据分类末ID获取整条级联ID
 export const getParentIdsById = (id)=>axios.get( '/category/getParentIdsById/'+ id)
 // 编辑商品
 export const productEdit = (data)=>axios.post( '/product/edit',data)
@@ -27,3 +28,6 @@ export const updateGoodsByFrameStatus = (id,status)=>axios.post( '/product/updat
 export const getGoodsByReviewStatus = (status)=>axios.get( '/product/getGoodsByReviewStatus?reviewStatus='+ status)
 // 根据ID拉取商品信息
 export const getOneProduct = (id)=>axios.get( '/product/'+ id)
+// 综合查询商品
+export const getProductByAll = (params)=>axios.get( '/product/getGoods',{params:params})
+

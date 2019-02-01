@@ -122,96 +122,18 @@
         </el-pagination>
       </div>
     </div>
-    <!--1.基本信息-->
-    <el-dialog title="1.商品基本信息" :visible.sync="dialogFormVisible">
-      <div class="goodsBaseInfo">
-        <el-form :model="productC" :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm">
-          <el-form-item label="商品分类" prop="name">
-            <el-cascader placeholder="试试搜索：服装"
-                         :options="classifyOptions"
-                         filterable
-                         size="small"
-                         style="width: 300px"
-                         v-model=productC.categoryId
-                         @change="classification"
-            ></el-cascader>
-            <span v-text="'您的分类 ：' + classifySelectedName.join(' > ')" style="font-size: 14px;font-weight: 600;color: blue"></span>
-          </el-form-item>
-          <el-form-item label="商品标题" prop="title">
-            <el-input v-model="productC.title" size="small"></el-input>
-          </el-form-item>
-          <el-form-item label="商品名称" prop="name">
-            <el-input v-model="productC.name" size="small"></el-input>
-          </el-form-item>
-          <el-form-item label="警戒库存" prop="warnStock">
-            <el-input v-model="productC.warnStock" size="small" type="number"></el-input>
-          </el-form-item>
-        </el-form>
-      </div>
-      <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogFormVisible = false">取 消</el-button>
-        <el-button type="primary" @click="dialogFormVisible = false">下一步</el-button>
-      </div>
-    </el-dialog>
   </div>
 
 </template>
 <script>
   import {getAllUpperGoods} from "@/api/axios"
   export default {
+    props:['goodsListData'],
     data() {
       return {
         loading:true,
-        dialogFormVisible: false,
-        // 分类源
-        classifyOptions:[],
-        classifySelectedName:[],
-        product: {
-          brandId: 1,
-          categoryId: 0,
-          deleteFlag: 0,
-          frameStatus: 1,
-          id:6,
-          name: "string",
-          productVideoUrl: "//cloud.video.taobao.com/play/u/1742848702/p/1/e/6/t/1/216244026072.mp4",
-          title: "人人咖人人都是大咖",
-          videoImgUrl: "http://192.168.0.129:9999/group1/M00/00/02/wKgAgVxIEP2AAQDGAABPERhkO9k676.jpg",
-          warnStock: 0,
-          // 选择分类的ID
-          classifySelectedId: [],
-        },
-        rules: {
-          name: [
-            { required: true, message: '请输入商品名称', trigger: 'blur' },
-            { min: 3, max: 10, message: '长度在 3 到 10 个字符', trigger: 'blur' }
-          ],
-          title: [
-            { type: 'date', required: true, message: '请输入商品标题', trigger: 'blur' }
-          ],
-          region: [
-            { required: true, message: '请选择活动区域', trigger: 'change' }
-          ],
-
-          date2: [
-            { type: 'date', required: true, message: '请选择时间', trigger: 'change' }
-          ],
-          type: [
-            { type: 'array', required: true, message: '请至少选择一个活动性质', trigger: 'change' }
-          ],
-          resource: [
-            { required: true, message: '请选择活动资源', trigger: 'change' }
-          ],
-          desc: [
-            { required: true, message: '请填写活动形式', trigger: 'blur' }
-          ]
-        },
-
-
-
-
         formLabelWidth: '120px',
         currentPage4: 4,
-        goodsListData: [],
         multipleSelection: []
       }
     },
@@ -222,11 +144,12 @@
       getGoodsList(){
         this.loading = true
         getAllUpperGoods('2').then(res=>{
+          console.log(res);
           if(res.data.data !== 1){
-            this.goodsListData = res.data.data
+            this.goodsListData = res.data.data;
             this.loading = false
           }else {
-            this.$message.error('请求错误，请刷新页面重试');
+            return this.$message.error('请求错误，请刷新页面重试');
           }
         })
       },
@@ -280,56 +203,6 @@
           // });
         });
       },
-      // 获取所有分类
-      getAll() {
-        getAllSelectList().then(res => {
-          console.log(res);
-          var newArr = [];
-          if(res.status == 200) {
-            res.data.forEach(item => {
-              if (item.parentId === 0) {
-                item.children = [];
-                newArr.push(item)
-              }
-            });
-            res.data.forEach(item => {
-              newArr.forEach(tisp => {
-                if (item.parentId == tisp.value) {
-                  tisp.children.push(item)
-                }
-              })
-            });
-            this.classifyOptions = newArr;
-          }
-        })
-      },
-      // 每次选择的分类value和label
-      classification(value){
-        this.product.classifySelectedId = value
-        this.product.categoryId = value[value.length-1]
-        this.vals=getCascaderObj(value, this.classifyOptions);
-        let classifyName = []
-        this.vals.forEach(item=>{
-          classifyName.push(item.label)
-        })
-        console.log(this.product);
-        this.product.brandId = null
-        this.classifySelectedName = classifyName
-        // 通过分类ID获取品牌
-        let idCategory = value[value.length-1]
-        getGoodsBrandByCategory(idCategory).then(res=>{
-          if(res.data.code == 0){
-            this.brandOptions = res.data.data
-          }
-          else {
-            this.$message.error('分类品牌加载失败，请重新选择分类');
-          }
-        })
-      },
-
-
-
-
 
       // 分页
       handleSizeChange(val) {

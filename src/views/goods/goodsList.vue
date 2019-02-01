@@ -4,8 +4,8 @@
         <hr>
       <div class="goodsListTag">
         <div class="creatBut">
-          <div><i class="el-icon-document"></i><span @click="toDrafts">草稿箱（0）</span></div>
-          <div><i class="el-icon-delete"></i><span  @click="toRecycleBin">回收站（0）</span></div>
+          <div><i class="el-icon-document"></i><span @click="toDrafts">草稿箱</span></div>
+          <div><i class="el-icon-delete"></i><span  @click="toRecycleBin">回收站</span></div>
         </div>
         </div><el-menu default-active="/goodsList/onLineGoods" class="el-menu-demo" mode="horizontal" router>
         <el-menu-item index="/goodsList/onLineGoods">线上商品</el-menu-item>
@@ -19,10 +19,10 @@
 export default {
     methods:{
       toDrafts(){
-        this.$router.push({path:'/drafts'})
+        this.$router.push({path:'/goodsIndex/drafts'})
       },
       toRecycleBin(){
-        this.$router.push({path:'/recycleBin'})
+        this.$router.push({path:'/goodsIndex/recycleBin'})
       }
     }
 }

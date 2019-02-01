@@ -46,7 +46,7 @@
                <i class="el-icon-tickets"></i>
                 <span>订单管理</span>
               </template>
-                <el-menu-item index="/orderIndex/orderList">订单查询</el-menu-item>
+                <el-menu-item index="/orderIndex/orderAllList">订单列表</el-menu-item>
                 <el-menu-item index="/orderIndex/deliveryCenter">发货中心</el-menu-item>
                 <el-menu-item index="/orderIndex/freight">物流工具</el-menu-item>
                 <el-menu-item index="/orderIndex/package">包裹中心</el-menu-item>
@@ -108,12 +108,16 @@
         <el-main>
             <router-view></router-view>
         </el-main>
+
       </el-container>
     </el-container>
   </div>
+
 </template>
 
 <script>
+
+  // import "@/components/moveImg.js"
 export default {
   name: "index",
   data() {
@@ -124,17 +128,15 @@ export default {
     },
   methods: {
     changeSubmenu(index,indexPath){
-      console.log("一级");
-      console.log(index, indexPath);
+      // console.log(index, indexPath);
       this.$store.commit('setKey',index)
     },
     changeOption(key,indexPath){
-      console.log("二级");
-      console.log(key,indexPath);
+      // console.log(key,indexPath);
       this.$store.commit('setIndexPath',indexPath)
     },
     handleSelect(key, keyPath) {
-      console.log(key, keyPath);
+      // console.log(key, keyPath);
     }
    },
   watch: {

@@ -6,7 +6,7 @@
       v-loading="loading"
       :header-cell-style="{background:'#F6F6F6',fontWeight:'700',color:'#000'}"
       :data="goodsListData1"
-      tooltip-effect="dark"
+      tooltip-effect="light"
       style="width: 100%"
       @selection-change="handleSelectionChange">
       <el-table-column
@@ -24,9 +24,9 @@
               <img :src="scope.row.videoImgUrl" alt="">
             </div>
             <div class="goodsInfo">
-              <!--<p>scope.row.</p>-->
-              <a href="#" v-text="scope.row.title"></a>
               <p>商品ID：{{scope.row.id}}</p>
+              <span v-text="scope.row.title" @click="goodsInfo(scope.row.id)" style="color:blue;cursor: pointer;"></span>
+              <p>Sku编码：{{scope.row.code}}</p>
             </div>
           </div>
         </template>
@@ -37,12 +37,6 @@
         label="当前价"
       >
       </el-table-column>
-      <!--<el-table-column-->
-        <!--prop=""-->
-        <!--align="center"-->
-        <!--label="单购价"-->
-        <!--show-overflow-tooltip>-->
-      <!--</el-table-column>-->
       <el-table-column
         prop=""
         align="center"
@@ -74,7 +68,7 @@
         prop="frameStatus"
         align="center"
         label="在售状态"
-        show-overflow-tooltip>
+       >
         <template slot-scope="scope">
           <el-button type="warning"  size="mini" v-if="scope.row.frameStatus == 0">待上架</el-button>
           <el-button type="success" size="mini" v-if="scope.row.frameStatus == 1">已上架</el-button>
@@ -140,14 +134,14 @@
       return null;
     });
   }
-  import {getAllGoods,delGoods,updateGoodsByFrameStatus,getOneProduct} from "@/api/axios"
+  import {getAllGoods,delGoods,updateGoodsByFrameStatus,getOneProduct,getAllSelectList} from "@/api/axios"
   export default {
+    props:['goodsListData'],
     data() {
       return {
         loading:true,
         currentPage4: 4,
-        goodsListData: [],
-        multipleSelection: []
+        multipleSelection: [],
       }
     },
     mounted(){
@@ -158,7 +152,7 @@
       getGoodsList(){
         this.loading = true
        getAllGoods().then(res=>{
-
+         // console.log(res);
          if(res.data.data !== 1){
            this.goodsListData = res.data.data
            this.loading = false
@@ -204,7 +198,7 @@
       },
       // 删除
       handleDelete(index, row) {
-        console.log(index, row);
+        // console.log(index, row);
         this.$confirm('是否确认删除?', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
@@ -255,6 +249,16 @@
               type: 'error',
               message: '请求失败，请重试!'
             });
+          }
+        })
+      },
+      // 查看商品详情
+      goodsInfo(id){
+        getOneProduct(id).then(res=>{
+          console.log(res);
+          if(res.data.data != "1"){
+            this.$store.commit('setGoodsInfo',res.data.data)
+            this.$router.push({path:'/goodsIndex/goodsInfo'})
           }
         })
       },
